@@ -1,0 +1,17 @@
+.sheets__table {
+  padding: 0 1rem 0 1rem;
+}
+.sheets__table-item {
+  display: flex;
+}
+.sheets__table-item span {
+  flex: 1;
+}
+.sheets__table-headers {
+  padding-bottom: 15px;
+}
+.sheets__table-header {
+  font-weight: 700;
+  border-bottom: 1px dashed;
+  margin-right: 50px;
+}

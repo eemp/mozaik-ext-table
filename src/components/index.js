@@ -1,5 +1,5 @@
-import List from './List.jsx';
+import Table from './Table.js';
 
 export default {
-  List
+  Table
 };

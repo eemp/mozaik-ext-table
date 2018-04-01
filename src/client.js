@@ -1,62 +1,63 @@
-'use strict';
-import path from 'path';
-import fs from 'fs';
-import config  from './config';
-import Promise from 'bluebird';
-import chalk from 'chalk';
-import SheetsAPI from 'google-sheets-api';
+const _ = require('lodash');
+const chalk = require('chalk');
+const csv = require('csvtojson');
+const path = require('path');
+const fs = require('fs');
+const Promise = require('bluebird');
 
-const Sheets = SheetsAPI.Sheets;
+const readFileAsync = Promise.promisify(require('fs').readFile);
+
+const config = require('./config');
 
 const client = (mozaik) => {
   mozaik.loadApiConfig(config);
 
-  var serviceEmail = config.get('sheets.googleServiceEmail');
-  var serviceKeyPath = path.normalize(config.get('sheets.googleServiceKeypath'));
-
-  // Seems absolute/relative?
-  if (serviceKeyPath.substr(0, 1) !== '/') {
-    serviceKeyPath = path.join(process.cwd(), serviceKeyPath);
-  }
-  // Check the existance of .PEM file
-  if (!fs.existsSync(serviceKeyPath)) {
-    mozaik.logger.error(`Failed to find .PEM file: ${serviceKeyPath} -- ignoring API`);
-    return {
-      list: (params) => {
-        return Promise.reject([]);
-      }
-    };
-  }
-
-  // Initiate the Sheets client
-  const sheets = new Sheets({
-    email: serviceEmail,
-    key: fs.readFileSync(serviceKeyPath).toString()
-  });
-
-  const apiCalls = {
+  return {
     list(params) {
-      params = params || {};
-      mozaik.logger.info(`Reading sheets cells from ${params.documentId}`);
+      const {path:pathToFile, url} = params;
 
-      return sheets
-      .getSheets(params.documentId)
-      .then((docSheets) => {
-        const sheet = docSheets[params.sheetNo || 0];
-        return sheets.getRange(params.documentId, sheet.id, params.range);
-      })
-      .then((rows) => {
-        mozaik.logger.info('Found %s rows', rows.length);
-        return Promise.resolve(rows);
-      })
-      .catch((err) => {
-        mozaik.logger.error(chalk.red('Failed to read sheets'), err);
-        return Promise.reject([]);
-      });
+      mozaik.logger.info(`Fetching table data from ${pathToFile || url}`);
+
+      return pathToFile
+        ? getFSData(params)
+        : getAPIData(params)
+      ;
     }
   };
-
-  return apiCalls;
 };
 
-export default client;
+module.exports = client;
+
+function getFSData(params) {
+  const {path:pathToFile} = params;
+  return path.extname(pathToFile) === '.json' ?
+    getJSONFromJSONFile(pathToFile) :
+    getJSONFromCSVFile(pathToFile);;
+}
+
+function getAPIData(params) {
+  const {url, headers={}} = params;
+
+  return request
+    .get(url)
+    .set(headers || {}).promise()
+    .then(res => _.get(res, 'body'))
+}
+
+function getJSONFromJSONFile(pathToFile) {
+  return readFileAsync(pathToFile)
+    .then(data => safeJSONParse(data));
+}
+
+function getJSONFromCSVFile(pathToFile) {
+  return new Promise(function(resolve, reject) {
+    csv().fromFile(pathToFile)
+    .on('json', data => resolve(data))
+    .on('done', err => err && reject(err));
+  });
+}
+
+function safeJSONParse(data){
+  return _.attempt(JSON.parse.bind(null, data));
+}
+

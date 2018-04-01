@@ -1,4 +1,4 @@
-import convict from 'convict';
+const convict = require('convict');
 
 const config = convict({
   sheets: {
@@ -17,4 +17,4 @@ const config = convict({
   }
 });
 
-export default config;
+module.exports = config;
