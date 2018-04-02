@@ -9,7 +9,6 @@ import { Widget, WidgetHeader, WidgetBody } from '@mozaik/ui'
 import './Table.css';
 
 class Table extends Component {
-
   static getApiRequest(props) {
     return {
       id: `table.list.${props.title}`,
@@ -22,46 +21,33 @@ class Table extends Component {
   }
 
   render() {
-    const {apiData, fields, headers, title} = this.props;
+    const {apiData, fields, title} = this.props;
 
-    const headerDisplay = _.map(headers, header => (
-      <span className={`sheets__table-header ${header.replace(/[\W]/g, '-')}`}>{header}</span>
-    ));
-    const items = _.map(apiData, (rowFields, rowIndex) => {
-      // Render fields
-      const rowDisplay = _.map(fields || [], (fieldTemplate, fieldIndex) => {
-        // NOTE: format() does not support extends
-        const formattedField = format(fieldTemplate, rowFields);
-        const fieldIdentifier = `field-${fieldIndex}`;
-        return <span className={fieldIdentifier}>{formattedField}</span>;
-      });
-      return <li key={rowIndex} className="sheets__table-item">{rowDisplay}</li>;
+    const headers = <TableHeaders fields={fields}/>;
+    const rows = _.map(apiData, (rowData, rowIndex) => {
+      return <TableRow key={rowIndex} fields={fields} data={rowData}/>;
     });
 
     return (
       <Widget>
         <WidgetHeader title={title} icon={TableIcon} />
         <WidgetBody>
-          <div className="sheets sheets_list" ref={(c) => this._body = c}>
+          <div className="sheets sheets_list">
             <ul className="sheets__table">
-              <lh className="sheets__table-item sheets__table-headers">
-                {headerDisplay}
-              </lh>
-              {items}
+              {headers}
+              {rows}
             </ul>
           </div>
         </WidgetBody>
       </Widget>
     );
   }
-
 }
 
 Table.displayName = 'Table';
 
 Table.propTypes = {
-  fields: PropTypes.array,
-  format: PropTypes.object,
+  fields: PropTypes.array.isRequired,
   path:  PropTypes.string,
   title: PropTypes.string.isRequired,
   url:   PropTypes.string,
@@ -74,3 +60,51 @@ Table.defaultProps = {
 };
 
 export default Table;
+
+class TableHeaders extends React.Component {
+  render() {
+    const {fields} = this.props;
+    const headers = _.map(fields, field => {
+      const headerText = _.get(_.keys(field), 0);
+      const headerClass = headerText.replace(/[\W]+/g, '-');
+      return (
+        <span className={`sheets__table-header ${headerClass}`}>
+          {headerText}
+        </span>
+      );
+    });
+    return (
+      <lh className="sheets__table-item sheets__table-headers">
+        {headers}
+      </lh>
+    );
+  }
+}
+
+class TableRow extends React.Component {
+  render() {
+    const {fields, data} = this.props;
+    const row = _.map(fields, (field, fieldIndex) => {
+      const fieldName = _.get(_.keys(field), 0);
+      const fieldId = slugify(fieldName);
+      const fieldValueTemplate = _.get(field, fieldName);
+      const formattedFieldValue = format(fieldValueTemplate, data);
+      return <span key={`field-${fieldId}`}>{formattedFieldValue}</span>;
+    });
+    return <li className="sheets__table-item">{row}</li>;
+  }
+}
+
+TableRow.propTypes = {
+  data: PropTypes.object.isRequired,
+  fields: PropTypes.array.isRequired,
+};
+
+// TODO: don't be lazy, just npm install something?
+function slugify(text) {
+  return text
+    .replace(/[\W]+/g, ' ')
+    .trim()
+    .replace(' ', '-');
+}
+
