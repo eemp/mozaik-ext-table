@@ -1,18 +1,18 @@
 {
-  "name": "mozaik-ext-sheets",
+  "name": "mozaik-ext-table",
   "version": "0.6.0",
-  "description": "Mozaïk extension for listing data from Google Sheets",
-  "author": "SC5",
+  "description": "Mozaïk extension for rendering data in a table",
+  "author": "eemp",
   "license": "MIT",
   "engines": {
     "node": "4.0.x"
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/SC5/mozaik-ext-sheets.git"
+    "url": "http://github.com/eemp/mozaik-ext-table.git"
   },
   "bugs": {
-    "url": "https://github.com/SC5/mozaik-ext-sheets/issues"
+    "url": "https://github.com/eemp/mozaik-ext-table/issues"
   },
   "dependencies": {
     "bluebird": "3.3.5",
