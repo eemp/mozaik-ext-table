@@ -6,7 +6,23 @@ import format from 'string-format';
 
 import { Widget, WidgetHeader, WidgetBody } from '@mozaik/ui'
 
-import './Table.css';
+const styles = {
+  table: {
+    padding: '0 1rem 0 1rem',
+  },
+  header: {
+    borderBottom: '1px dashed',
+    fontWeight: 700,
+    marginRight: '50px',
+  },
+  row: {
+    display: 'flex',
+    padding: '5px 0 5px 0',
+  },
+  col: {
+    flex: 1,
+  },
+};
 
 class Table extends Component {
   static getApiRequest(props) {
@@ -32,8 +48,8 @@ class Table extends Component {
       <Widget>
         <WidgetHeader title={title} icon={TableIcon} />
         <WidgetBody>
-          <div className="sheets sheets_list">
-            <ul className="sheets__table">
+          <div style={styles.table}>
+            <ul>
               {headers}
               {rows}
             </ul>
@@ -68,13 +84,13 @@ class TableHeaders extends React.Component {
       const headerText = _.get(_.keys(field), 0);
       const headerClass = headerText.replace(/[\W]+/g, '-');
       return (
-        <span className={`sheets__table-header ${headerClass}`}>
+        <span style={_.assign({}, styles.header, styles.col)}>
           {headerText}
         </span>
       );
     });
     return (
-      <lh className="sheets__table-item sheets__table-headers">
+      <lh style={styles.row}>
         {headers}
       </lh>
     );
@@ -89,9 +105,9 @@ class TableRow extends React.Component {
       const fieldId = slugify(fieldName);
       const fieldValueTemplate = _.get(field, fieldName);
       const formattedFieldValue = format(fieldValueTemplate, data);
-      return <span key={`field-${fieldId}`}>{formattedFieldValue}</span>;
+      return <span style={styles.col} key={`field-${fieldId}`}>{formattedFieldValue}</span>;
     });
-    return <li className="sheets__table-item">{row}</li>;
+    return <li style={styles.row}>{row}</li>;
   }
 }
 
