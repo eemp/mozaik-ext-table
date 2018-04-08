@@ -1,11 +1,13 @@
 {
   "name": "mozaik-ext-table",
-  "version": "0.6.0",
+  "version": "0.0.1",
   "description": "Mozaïk extension for rendering data in a table",
   "author": "eemp",
   "license": "MIT",
+  "engineStrict": true,
   "engines": {
-    "node": "4.0.x"
+    "node": ">=6.0.0",
+    "npm": ">=3.0.0"
   },
   "repository": {
     "type": "git",
@@ -24,16 +26,36 @@
   },
   "main": "./components.js",
   "devDependencies": {
-    "eslint": "^3.5.0",
-    "eslint-plugin-react": "^6.3.0",
-    "proxyquire": "^1.7.10",
-    "react": "^0.13.3"
+    "@mozaik/babel-preset": "^1.0.0-alpha.6",
+    "@mozaik/ui": "^2.0.0-alpha.11",
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "cross-env": "^5.0.1",
+    "enzyme": "^2.9.1",
+    "eslint": "^4.2.0",
+    "eslint-plugin-react": "^7.1.0",
+    "husky": "^0.14.3",
+    "nyc": "8.1.0",
+    "prettier": "^1.5.3",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-test-renderer": "^15.6.1",
+    "validate-commit-msg": "^2.14.0"
   },
   "peerDependencies": {
-    "mozaik": ">=2.0.0",
-    "react": "^0.13.3"
+    "@mozaik/ui": "^2.0.0-alpha.11",
+    "react": "^15.6.1"
   },
   "scripts": {
-    "lint": "eslint --ext .js --ext .jsx ./src/** ./test/**"
+    "lint": "eslint ./src/** ./test/**",
+    "lint:fix": "eslint --fix ./src/** ./test/**",
+    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
+    "build:es": "cross-env BABEL_ENV=es babel src --out-dir es",
+    "build": "npm run build:commonjs && npm run build:es",
+    "fmt": "prettier --print-width=100 --tab-width=4 --bracket-spacing --no-semi --trailing-comma es5 --single-quote --color --write \"{src,test}/**/*.js\"",
+    "fmt:check": "prettier --print-width=100 --tab-width=4 --bracket-spacing --no-semi --trailing-comma es5 --single-quote --list-different \"{src,test}/**/*.js\"",
+    "prepublishOnly": "npm run build",
+    "version": "echo ${npm_package_version}",
+    "commitmsg": "validate-commit-msg"
   }
 }
