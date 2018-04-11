@@ -82,7 +82,6 @@ class TableHeaders extends React.Component {
     const {fields} = this.props;
     const headers = _.map(fields, field => {
       const headerText = _.get(_.keys(field), 0);
-      const headerClass = headerText.replace(/[\W]+/g, '-');
       return (
         <span style={_.assign({}, styles.header, styles.col)}>
           {headerText}
