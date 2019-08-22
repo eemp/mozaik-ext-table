@@ -37,6 +37,7 @@
     "enzyme": "^2.9.1",
     "eslint": "^4.2.0",
     "eslint-plugin-react": "^7.1.0",
+    "np": "^5.0.3",
     "nyc": "8.1.0",
     "prettier": "^1.5.3",
     "react": "^15.6.1",
@@ -57,6 +58,7 @@
     "fmt": "prettier --print-width=100 --tab-width=4 --bracket-spacing --no-semi --trailing-comma es5 --single-quote --color --write \"{src,test}/**/*.js\"",
     "fmt:check": "prettier --print-width=100 --tab-width=4 --bracket-spacing --no-semi --trailing-comma es5 --single-quote --list-different \"{src,test}/**/*.js\"",
     "prepublishOnly": "npm run build",
+    "release": "np",
     "version": "echo ${npm_package_version}",
     "commitmsg": "validate-commit-msg"
   }
