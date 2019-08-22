@@ -1,6 +1,6 @@
 {
   "name": "mozaik-ext-table",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Mozaïk extension for rendering data in a table",
   "author": "eemp",
   "license": "MIT",
