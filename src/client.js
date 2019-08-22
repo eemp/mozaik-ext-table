@@ -1,9 +1,10 @@
 const _ = require('lodash');
 const chalk = require('chalk');
 const csv = require('csvtojson');
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 const Promise = require('bluebird');
+const request = require('axios');
 
 const readFileAsync = Promise.promisify(require('fs').readFile);
 
@@ -38,10 +39,8 @@ function getFSData(params) {
 function getAPIData(params) {
   const {url, headers={}} = params;
 
-  return request
-    .get(url)
-    .set(headers || {}).promise()
-    .then(res => _.get(res, 'body'))
+  return request.get(url, { headers })
+    .then(res => _.get(res, 'data'));
 }
 
 function getJSONFromJSONFile(pathToFile) {
