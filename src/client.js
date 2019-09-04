@@ -1,7 +1,5 @@
 const _ = require('lodash');
-const chalk = require('chalk');
 const csv = require('csvtojson');
-const fs = require('fs');
 const path = require('path');
 const Promise = require('bluebird');
 const request = require('axios');
@@ -33,7 +31,7 @@ function getFSData(params) {
   const {path:pathToFile} = params;
   return path.extname(pathToFile) === '.json' ?
     getJSONFromJSONFile(pathToFile) :
-    getJSONFromCSVFile(pathToFile);;
+    getJSONFromCSVFile(pathToFile);
 }
 
 function getAPIData(params) {
