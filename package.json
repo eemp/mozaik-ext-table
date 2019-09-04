@@ -60,7 +60,7 @@
     "fmt": "prettier --print-width=100 --tab-width=4 --bracket-spacing --no-semi --trailing-comma es5 --single-quote --color --write \"{src,test}/**/*.js\"",
     "fmt:check": "prettier --print-width=100 --tab-width=4 --bracket-spacing --no-semi --trailing-comma es5 --single-quote --list-different \"{src,test}/**/*.js\"",
     "prepublishOnly": "npm run build",
-    "release": "np",
+    "release": "npx np@3.1.0",
     "version": "echo ${npm_package_version}",
     "commitmsg": "validate-commit-msg"
   }
