@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import TableIcon from 'react-icons/lib/fa/table'
+import { FaTable as TableIcon } from 'react-icons/fa'
 import format from 'string-format';
 
 import { Widget, WidgetHeader, WidgetBody } from '@mozaik/ui'
@@ -63,6 +63,7 @@ class Table extends Component {
 Table.displayName = 'Table';
 
 Table.propTypes = {
+  apiData: PropTypes.array.isRequired,
   fields: PropTypes.array.isRequired,
   path:  PropTypes.string,
   title: PropTypes.string.isRequired,
@@ -96,10 +97,14 @@ class TableHeaders extends React.Component {
   }
 }
 
+TableHeaders.propTypes = {
+  fields: PropTypes.array.isRequired,
+};
+
 class TableRow extends React.Component {
   render() {
     const {fields, data} = this.props;
-    const row = _.map(fields, (field, fieldIndex) => {
+    const row = _.map(fields, field => {
       const fieldName = _.get(_.keys(field), 0);
       const fieldId = slugify(fieldName);
       const fieldValueTemplate = _.get(field, fieldName);
